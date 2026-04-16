@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apuro Reel TV · Version 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0d;--panel:#12121a;--panel-2:#171723;--line:#242436;--text:#ececf3;--muted:#8a8aa0;--accent:#f4df43;--accent-2:#ff5d5d;--font-head:'Bebas Neue',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace}
+html,body{min-height:100%}
+body{background:radial-gradient(circle at top,rgba(244,223,67,.11),transparent 32%),linear-gradient(180deg,#0b0b10 0%,#09090c 100%);color:var(--text);font-family:var(--font-body)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.02) 3px,rgba(255,255,255,.02) 4px);opacity:.32}
+.shell{width:min(1380px,calc(100% - 32px));margin:16px auto 42px;border:1px solid var(--line);background:rgba(9,9,14,.88);box-shadow:0 30px 80px rgba(0,0,0,.45);backdrop-filter:blur(12px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 24px;border-bottom:1px solid var(--line)}
+.logo-wrap{display:flex;align-items:end;gap:12px}.logo{font-family:var(--font-head);font-size:2.4rem;letter-spacing:.08em;line-height:.9}.logo em{font-style:normal;color:var(--accent)}
+.badge{background:var(--accent-2);color:#fff;padding:4px 10px;border-radius:3px;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em}
+.top-right{text-align:right}.clock{font-family:var(--font-mono);font-size:1.2rem;color:var(--accent);letter-spacing:.08em}.date{color:var(--muted);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.18em;margin-top:4px}
+.social-row{display:flex;gap:8px;padding:12px 24px;border-bottom:1px solid var(--line);overflow:auto;background:rgba(255,255,255,.02)}
+.social-row span{color:var(--muted);font-family:var(--font-mono);font-size:.65rem;letter-spacing:.18em;white-space:nowrap;align-self:center;margin-right:6px}
+.social-link{color:var(--text);text-decoration:none;border:1px solid var(--line);background:var(--panel);padding:8px 12px;border-radius:999px;font-family:var(--font-mono);font-size:.72rem;white-space:nowrap;transition:.2s ease}
+.social-link:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.layout{display:grid;grid-template-columns:minmax(0,1.2fr) 320px;min-height:720px}
+.left{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.status-bar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 12px rgba(255,93,93,.6)}
+.status-label,.status-slot,.status-note{font-family:var(--font-mono);font-size:.72rem}.status-label{color:var(--accent-2);letter-spacing:.16em}.status-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status-note{color:var(--muted)}
+.screen-area{flex:1;display:grid;place-items:center;padding:28px;background:radial-gradient(circle at center,rgba(244,223,67,.07),transparent 32%),linear-gradient(180deg,#10101a 0%,#08080c 100%)}
+.tv{width:min(100%,980px)}.frame{position:relative;aspect-ratio:16/9;border-radius:24px;border:1px solid #2a2a38;background:#08080b;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.62),inset 0 0 30px rgba(255,255,255,.03)}
+.screen{position:relative;width:100%;height:100%;overflow:hidden;border-radius:14px;background:#000}
+#player-v1,#player-v1 iframe{width:100%;height:100%;border:0}
+.overlay-no-signal,.overlay-loading{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;font-family:var(--font-mono)}
+.overlay-no-signal{background:repeating-linear-gradient(0deg,#141414 0,#141414 2px,#1c1c1c 2px,#1c1c1c 4px);z-index:2}.overlay-loading{background:rgba(8,8,12,.84);z-index:3}
+.signal-box h2{font-family:var(--font-head);font-size:2rem;letter-spacing:.16em;margin-bottom:10px}.signal-box p{color:var(--muted);letter-spacing:.12em;font-size:.72rem}
+.controls{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:999px;padding:10px 14px;font-family:var(--font-mono);font-size:.72rem;cursor:pointer;transition:.2s ease}
+.btn:hover{border-color:var(--accent);color:var(--accent)}.btn-primary{background:var(--accent);color:#080808;border-color:transparent;font-weight:700}.btn-primary:hover{color:#080808;filter:brightness(1.04)}
+.progress{padding:14px 18px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.02)}
+.progress-row{display:flex;justify-content:space-between;gap:12px;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-bottom:10px}.progress-row strong{color:var(--accent);font-weight:500}
+.bar{height:4px;border-radius:999px;background:#262638;overflow:hidden}.bar>div{width:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.next-slot{margin-top:10px;color:var(--muted);font-size:.78rem}.next-slot b{color:var(--text)}
+.sidebar{display:flex;flex-direction:column;min-height:0}.panel{border-bottom:1px solid var(--line);padding:18px}
+.panel h2{font-family:var(--font-head);font-size:1.2rem;letter-spacing:.1em;margin-bottom:10px}.panel p{color:var(--muted);line-height:1.6;font-size:.92rem}
+.guide{flex:1;min-height:0;display:flex;flex-direction:column}.guide-head{display:flex;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:.72rem}.guide-head strong{color:var(--accent);font-weight:500}.guide-list{flex:1;overflow:auto}
+.guide-item{width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);padding:14px 18px;cursor:pointer}.guide-item[disabled]{opacity:.45;cursor:not-allowed}.guide-item.live{background:rgba(255,93,93,.08);box-shadow:inset 3px 0 0 var(--accent-2)}.guide-item:hover:not([disabled]){background:rgba(255,255,255,.04)}
+.guide-time{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-bottom:6px}.guide-item.live .guide-time{color:var(--accent-2)}.guide-title{font-size:.9rem;font-weight:700;line-height:1.35}.guide-sub{font-family:var(--font-mono);font-size:.66rem;color:var(--muted);margin-top:6px}
+.ticker{display:flex;overflow:hidden;height:34px;border-top:1px solid var(--line);background:var(--accent)}.ticker-label{flex:0 0 auto;display:grid;place-items:center;padding:0 16px;font-family:var(--font-head);letter-spacing:.1em;color:#121212;background:#050505}.ticker-track{min-width:max-content;display:flex;align-items:center;animation:marquee 42s linear infinite}.ticker-track span{padding:0 28px;color:#090909;font-family:var(--font-mono);font-size:.72rem}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (max-width:980px){.layout{grid-template-columns:1fr}.left{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:720px){.shell{width:min(100%,calc(100% - 16px));margin:8px auto 24px}header{padding:16px}.social-row{padding:10px 16px}.screen-area{padding:16px}.frame{padding:10px;border-radius:18px}.status-bar{padding:12px 16px;flex-wrap:wrap}.clock{font-size:1rem}.logo{font-size:1.85rem}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="logo-wrap"><div class="logo">APURO <em>REEL</em> TV</div><div class="badge">EN DIRECTO</div></div><div class="top-right"><div class="clock" id="clock-v1">--:--:--</div><div class="date" id="date-v1">CARGANDO FECHA</div></div></header>
+<div class="social-row" id="socials-v1"><span>REDES DEL PROGRAMA</span></div>
+<main class="layout">
+<section class="left">
+<div class="status-bar"><div class="dot"></div><div class="status-label">ON AIR</div><div class="status-title" id="title-v1">Preparando señal...</div><div class="status-note" id="slot-v1">--:--</div></div>
+<div class="screen-area"><div class="tv"><div class="frame"><div class="screen"><div class="overlay-no-signal" id="nosignal-v1"><div class="signal-box"><h2>APURO REEL TV</h2><p>ESPERANDO LA PLAYLIST DEL CANAL</p></div></div><div class="overlay-loading" id="loading-v1"><div class="signal-box"><h2>CARGANDO</h2><p id="loading-text-v1">INICIANDO REPRODUCTOR...</p></div></div><div id="player-v1"></div></div></div></div></div>
+<div class="controls"><button class="btn btn-primary" type="button" id="go-live-v1">Volver al directo</button><button class="btn" type="button" id="mute-v1">Activar sonido</button><button class="btn" type="button" id="open-yt-v1">Abrir playlist</button></div>
+<div class="progress"><div class="progress-row"><span id="elapsed-v1">0:00</span><strong id="countdown-v1">Cambio en 60m 00s</strong><span id="duration-v1">--</span></div><div class="bar"><div id="bar-v1"></div></div><div class="next-slot" id="next-v1">Próxima hora: <b>cargando...</b></div></div>
+</section>
+<aside class="sidebar"><section class="panel"><h2>La Idea</h2><p>La web funciona como un canal propio: el visitante cae directamente en un episodio de vuestra playlist y puede saltar al directo, ver la parrilla del día y encontrar todas las redes del proyecto sin salir de la página.</p></section><section class="guide"><div class="guide-head"><span>PARRILLA DE 24 HORAS</span><strong id="count-v1">0 EPS</strong></div><div class="guide-list" id="guide-v1"></div></section></aside>
+</main>
+<div class="ticker"><div class="ticker-label">APURO REEL TV</div><div class="ticker-track" id="ticker-v1"></div></div>
+</div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+const CONFIG_V1={playlistId:"PLktEpakcg6naC1oocHyJL3XtaZzegYnG0",timezone:"Europe/Madrid",playlistUrl:"https://www.youtube.com/playlist?list=PLktEpakcg6naC1oocHyJL3XtaZzegYnG0",socials:[{label:"YouTube",url:"https://youtube.com/@apuroreel"},{label:"Twitch",url:"https://www.twitch.tv/apuroreel"},{label:"Kick",url:"https://kick.com/apuroreel"},{label:"Instagram",url:"https://instagram.com/apuroreel"},{label:"TikTok",url:"https://tiktok.com/@apuroreel"},{label:"X / Twitter",url:"https://twitter.com/apuroreel"},{label:"Web",url:"https://apuroreel.es"}]};
+const stateV1={player:null,episodes:[],currentIndex:0,currentHour:null,actualDuration:0,muted:true,manualPreview:false};
+const elsV1={clock:document.getElementById("clock-v1"),date:document.getElementById("date-v1"),title:document.getElementById("title-v1"),slot:document.getElementById("slot-v1"),guide:document.getElementById("guide-v1"),count:document.getElementById("count-v1"),ticker:document.getElementById("ticker-v1"),bar:document.getElementById("bar-v1"),elapsed:document.getElementById("elapsed-v1"),duration:document.getElementById("duration-v1"),countdown:document.getElementById("countdown-v1"),next:document.getElementById("next-v1"),loading:document.getElementById("loading-v1"),loadingText:document.getElementById("loading-text-v1"),noSignal:document.getElementById("nosignal-v1"),socials:document.getElementById("socials-v1"),mute:document.getElementById("mute-v1"),goLive:document.getElementById("go-live-v1"),openPlaylist:document.getElementById("open-yt-v1")};
+function zPartsV1(){const f=new Intl.DateTimeFormat("es-ES",{timeZone:CONFIG_V1.timezone,weekday:"long",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});return Object.fromEntries(f.formatToParts(new Date()).filter(p=>p.type!=="literal").map(p=>[p.type,p.value]))}
+function hourNowV1(){return Number(zPartsV1().hour)} function padV1(n){return String(n).padStart(2,"0")} function fmtHourV1(h){return padV1(h%24)+":00"}
+function fmtSecondsV1(total){if(!Number.isFinite(total)||total<=0)return "--";const s=Math.floor(total),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h?`${h}:${padV1(m)}:${padV1(ss)}`:`${m}:${padV1(ss)}`}
+function secondsIntoHourV1(){const p=zPartsV1();return Number(p.minute)*60+Number(p.second)} function episodeForHourV1(hour){return stateV1.episodes.length?hour%stateV1.episodes.length:0}
+function setStatusV1(text){elsV1.loadingText.textContent=text}
+function renderSocialsV1(){elsV1.socials.insertAdjacentHTML("beforeend",CONFIG_V1.socials.map(item=>`<a class="social-link" href="${item.url}" target="_blank" rel="noopener noreferrer">${item.label}</a>`).join(""))}
+function updateClockV1(){const p=zPartsV1();elsV1.clock.textContent=`${p.hour}:${p.minute}:${p.second}`;elsV1.date.textContent=`${p.weekday.toUpperCase()} ${p.day} ${p.month.toUpperCase()} ${p.year}`}
+function updateHeadlineV1(){const ep=stateV1.episodes[stateV1.currentIndex];elsV1.title.textContent=ep?`Ep ${stateV1.currentIndex+1} · ${ep.title}`:"Preparando señal...";elsV1.slot.textContent=`${stateV1.manualPreview?"VISTA PREVIA":"DIRECTO"} · ${fmtHourV1(hourNowV1())}`}
+function renderGuideV1(){if(!stateV1.episodes.length)return;const nowHour=hourNowV1();elsV1.guide.innerHTML=Array.from({length:24},(_,hour)=>{const idx=episodeForHourV1(hour),nextIdx=episodeForHourV1(hour+1),live=hour===nowHour,past=hour<nowHour;return `<button class="guide-item ${live?"live":""}" data-hour="${hour}" ${past?"disabled":""}><div class="guide-time">${fmtHourV1(hour)} ${live?"· EN DIRECTO":""}</div><div class="guide-title">Ep ${idx+1} · ${stateV1.episodes[idx].title}</div><div class="guide-sub">Siguiente franja: Ep ${nextIdx+1} · ${stateV1.episodes[nextIdx].title}</div></button>`}).join("");elsV1.guide.querySelectorAll("[data-hour]").forEach(btn=>btn.addEventListener("click",()=>playIndexV1(episodeForHourV1(Number(btn.dataset.hour)),true)))}
+function renderTickerV1(){if(!stateV1.episodes.length)return;const line=Array.from({length:24},(_,hour)=>{const idx=episodeForHourV1(hour);return `<span>${fmtHourV1(hour)} · Ep ${idx+1} · ${stateV1.episodes[idx].title}</span>`}).join("");elsV1.ticker.innerHTML=line+line}
+function updateProgressV1(){const elapsedHour=secondsIntoHourV1();elsV1.bar.style.width=`${elapsedHour/36}%`;let current=0,duration=stateV1.actualDuration;try{current=stateV1.player?.getCurrentTime?.()||0;duration=stateV1.player?.getDuration?.()||duration}catch(error){} elsV1.elapsed.textContent=fmtSecondsV1(current);elsV1.duration.textContent=fmtSecondsV1(duration);const rem=3600-elapsedHour;elsV1.countdown.textContent=`Cambio en ${Math.floor(rem/60)}m ${padV1(rem%60)}s`;const nextHour=(hourNowV1()+1)%24,nextEp=stateV1.episodes[episodeForHourV1(nextHour)];if(nextEp)elsV1.next.innerHTML=`Próxima hora: <b>${fmtHourV1(nextHour)} · Ep ${episodeForHourV1(nextHour)+1} · ${nextEp.title}</b>`}
+function playIndexV1(index,preview=false){if(!stateV1.player||!stateV1.episodes.length)return;const safe=((index%stateV1.episodes.length)+stateV1.episodes.length)%stateV1.episodes.length;stateV1.currentIndex=safe;stateV1.manualPreview=preview;stateV1.actualDuration=0;updateHeadlineV1();elsV1.noSignal.style.display="none";stateV1.player.playVideoAt(safe)}
+function syncToLiveV1(force=false){const liveHour=hourNowV1();if(!force&&stateV1.currentHour===liveHour)return;stateV1.currentHour=liveHour;playIndexV1(episodeForHourV1(liveHour),false);renderGuideV1()}
+async function fetchTitleV1(id,fallback){try{const r=await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);if(r.ok){const d=await r.json();if(d.title)return d.title}}catch(error){} return fallback}
+async function fetchEpisodesV1(ids){const result=[];for(let i=0;i<ids.length;i+=4){const chunk=ids.slice(i,i+4);const rows=await Promise.all(chunk.map((id,idx)=>fetchTitleV1(id,`Episodio ${i+idx+1}`).then(title=>({id,title}))));result.push(...rows);setStatusV1(`CARGANDO EPISODIOS... ${result.length}/${ids.length}`)}return result}
+function waitForPlaylistV1(attempt=0){return new Promise(resolve=>{if(attempt>60){resolve([]);return} try{const ids=stateV1.player?.getPlaylist?.()||[];if(ids.length){resolve(ids);return}}catch(error){} setTimeout(()=>resolve(waitForPlaylistV1(attempt+1)),500)})}
+renderSocialsV1();updateClockV1();setInterval(updateClockV1,1000);
+elsV1.goLive.addEventListener("click",()=>syncToLiveV1(true));elsV1.openPlaylist.addEventListener("click",()=>window.open(CONFIG_V1.playlistUrl,"_blank","noopener"));elsV1.mute.addEventListener("click",()=>{if(!stateV1.player)return;if(stateV1.muted){stateV1.player.unMute();stateV1.muted=false;elsV1.mute.textContent="Silenciar"}else{stateV1.player.mute();stateV1.muted=true;elsV1.mute.textContent="Activar sonido"}})
+window.onYouTubeIframeAPIReady=function(){setStatusV1("INICIANDO REPRODUCTOR...");stateV1.player=new YT.Player("player-v1",{playerVars:{listType:"playlist",list:CONFIG_V1.playlistId,autoplay:1,controls:1,rel:0,playsinline:1,modestbranding:1},events:{onReady:async()=>{setStatusV1("LEYENDO PLAYLIST...");stateV1.player.mute();stateV1.player.playVideo();const ids=await waitForPlaylistV1();if(!ids.length){setStatusV1("NO SE PUDO LEER LA PLAYLIST");return} setStatusV1(`OBTENIENDO TITULOS (${ids.length})...`);stateV1.episodes=await fetchEpisodesV1(ids);elsV1.count.textContent=`${stateV1.episodes.length} EPS`;renderGuideV1();renderTickerV1();syncToLiveV1(true);updateProgressV1();elsV1.loading.style.display="none";setInterval(updateProgressV1,1000);setInterval(()=>syncToLiveV1(false),5000);setInterval(renderGuideV1,60000)},onStateChange:event=>{if(event.data===YT.PlayerState.PLAYING){elsV1.noSignal.style.display="none";try{stateV1.actualDuration=stateV1.player.getDuration()||stateV1.actualDuration;const i=stateV1.player.getPlaylistIndex();if(i>=0){stateV1.currentIndex=i;updateHeadlineV1()}}catch(error){}} if(event.data===YT.PlayerState.ENDED&&stateV1.episodes.length)playIndexV1(stateV1.currentIndex+1,stateV1.manualPreview)},onError:()=>{elsV1.noSignal.style.display="grid";setTimeout(()=>{if(stateV1.episodes.length)playIndexV1(stateV1.currentIndex+1,stateV1.manualPreview)},1800)}}})}
+</script>
+</body>
+</html>
